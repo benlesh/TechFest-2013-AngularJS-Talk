@@ -49,6 +49,18 @@ angular.module('techfest', [])
                 templateUrl: 'templates/home.html'
             })
     }]);
+
+angular.module('techfest').run(['$window', '$rootScope', function ($window, $rootScope) {
+    var callingPrettyPrint = null;
+
+    function callPrettyPrint(){
+        if(callingPrettyPrint) $window.clearTimeout(callingPrettyPrint);
+        callingPrettyPrint = $window.setTimeout($window.prettyPrint, 50);
+    }
+
+    $rootScope.$on('$viewContentLoaded', callPrettyPrint);
+    $rootScope.$on('$includeContentLoaded', callPrettyPrint);
+}]);
 // Defining an empty controller that I'm going to use with
 // some of the routed pages that have no real business logic to them.
 // this is a bit of a hack, but it's to save me time.
@@ -86,12 +98,6 @@ angular.module('techfest')
                 }, function (url) {
                     $http.get(url).then(function (code) {
                         elem.text(code.data);
-
-                        // prettyPrint needs to wait for the text in the elements to be processed
-                        // before it will work properly with line numbers.
-                        setTimeout(function () {
-                            $window.prettyPrint && $window.prettyPrint();
-                        }, 100);
                     });
                 });
             }

@@ -49,3 +49,15 @@ angular.module('techfest', [])
                 templateUrl: 'templates/home.html'
             })
     }]);
+
+angular.module('techfest').run(['$window', '$rootScope', function ($window, $rootScope) {
+    var callingPrettyPrint = null;
+
+    function callPrettyPrint(){
+        if(callingPrettyPrint) $window.clearTimeout(callingPrettyPrint);
+        callingPrettyPrint = $window.setTimeout($window.prettyPrint, 50);
+    }
+
+    $rootScope.$on('$viewContentLoaded', callPrettyPrint);
+    $rootScope.$on('$includeContentLoaded', callPrettyPrint);
+}]);
